@@ -349,6 +349,15 @@ spec:
       - name: initconfigs
         configMap:
           name: {{ .Release.Name }}-conf
+      {{- range $pv := .Values.persistenceStorage }}
+      {{- if $pv.enabled }}
+      {{- if $pv.storageClass }}
+      - name: {{ $pv.name | quote }}
+        persistentVolumeClaim:
+          claimName: {{ $pv.name }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
       {{- range $lv := .Values.volumes }}
       - name: {{ $lv.name | quote }}
 {{ toYaml $lv.template  | indent 8}}
